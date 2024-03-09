@@ -1,0 +1,38 @@
+[package]
+name = "ai_notepad"
+version = "0.1.0"
+edition = "2021"
+description = "A lightweight application to test interaction with large language models."
+keywords = ["llm", "llama", "ai", "gguf", "candle"]
+authors = ["Timothy Bogdala <tdb@animal-machine.com>"]
+
+[dependencies]
+anyhow = "1.0.80"
+candle-core = { git = "https://github.com/huggingface/candle.git", version = "0.4.1" }
+candle-transformers = { git = "https://github.com/huggingface/candle.git", version = "0.4.1"  }
+crossbeam = { version = "0.8.4", features = ["crossbeam-channel"] }
+dirs = "5.0.1"
+eframe = "0.26.2"
+env_logger = "0.11.2"
+hf-hub = "0.3.2"
+log = "0.4.21"
+rust-embed = "8.3.0"
+serde = { version = "1.0.197", features = ["derive"] }
+serde_yaml = "0.9.32"
+tokenizers = "0.15.2"
+
+[features]
+default = []
+cuda = [
+    "candle-core/cuda", 
+    "candle-transformers/cuda"
+    ]
+cudnn = [    
+    "candle-core/cudnn", 
+]
+metal = [
+    "candle-core/metal", 
+    "candle-core/accelerate", 
+    "candle-transformers/metal", 
+    "candle-transformers/accelerate" 
+    ]
