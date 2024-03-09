@@ -73,11 +73,12 @@ cd ai_notepad
 cargo build --release --features cuda
 ```
 
-You can swap out `--features cuda` to `--features metal` for MacOS, or leave it out entirely for a CPU only build.
+You can swap out `--features cuda` to `--features metal` for MacOS, or leave it out entirely for a CPU only build. The cuda
+binary package for Windows was compiled with both `cuda` and `cudnn` features.
 
 ### Windows Build Notes
 
-* The Windows 11 build was tested with Cuda 12.4 and VS 2022. cuDNN was tested (unsuccessfully) with 9.0.0, using the 'tarball' version so that
+* The Windows 11 build was tested with Cuda 12.4 and VS 2022. cuDNN was tested with 8.9.6.50 (9.0.0.312 doesn't seem compatible with Candle), using the 'tarball' version so that
   it could be copied into the Cuda 12.4 folder.
 * Make sure to open the `x64 Native Tools Command Prompt` to build the rust project to get the `cuda` feature to build correctly.
 
