@@ -64,6 +64,9 @@ which use the same names for things so it directly maps to these parameters.
 
 ## Building from source
 
+Both Linux and Windows will require a recent [Cuda installation](https://developer.nvidia.com/cuda-toolkit). The project is also
+pure Rust so the [Rust toolchain](https://www.rust-lang.org/learn/get-started) will need to be installed as well.
+
 ```bash
 git clone https://github.com/tbogdala/ai_notepad.git
 cd ai_notepad
