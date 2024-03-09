@@ -64,7 +64,7 @@ which use the same names for things so it directly maps to these parameters.
 ## Building from source
 
 ```bash
-git clone git@github.com:tbogdala/ai_notepad.git
+git clone https://github.com/tbogdala/ai_notepad.git
 cd ai_notepad
 cargo build --release --features cuda
 ```
