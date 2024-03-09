@@ -11,7 +11,8 @@ running GGUF quantized models with hardware acceleration.
 * Automatically downloads the necessary files from Huggingface.co
 * Easy to play with prompt formatting to see what works and what does not
 * Pure [Rust](https://www.rust-lang.org/) implementation using [Candle](https://github.com/huggingface/candle)
-  and support Cuda and Metal accelleration.
+  and support Cuda and Metal accelleration
+* Serves as an example of a simple Rust app using [egui](https://github.com/emilk/egui) and [Candle](https://github.com/huggingface/candle)
 
 
 ## Known Limitations
@@ -45,7 +46,7 @@ name from the Huggingface repository referenced by 'Model ID' such as "llama-2-7
 
 The default settings use TheBloke's Llama-2-7B-GGUF Q4_K_M quantized file. Since this model uses the default
 Llama-2 tokenizer, it references the f16 version of this model because that's where the tokenizer model lives.
-With Llama-2, the default EOS token is "</s>" but other models may change that (e.g. "<|im_end|>").
+With Llama-2, the default EOS token is `</s>` but other models may change that (e.g. `<|im_end|>`).
 
 So by default, the following values are set:
 
