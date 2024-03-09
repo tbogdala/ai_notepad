@@ -19,6 +19,7 @@ running GGUF quantized models with hardware acceleration.
 
 * The sampler implementation is cribbed from Candle's examples and is *very basic*; this will be replaced soon.
 * No layer control is provided for offloading models to GPU at present.
+* It's possible that RTX 3000 series cards or better are the minimum required for Cuda builds - unconfirmed yet.
 
 
 ## Usage
