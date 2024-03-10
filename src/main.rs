@@ -1,5 +1,4 @@
-//#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
-// NOTE: The above line has to be commented out on Windows if you want to see log output.
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
  
 use anyhow::Context;
 use config::Config;
@@ -137,6 +136,7 @@ impl eframe::App for AiNotepadApp {
 
             // check for incoming text generation messages
             if let Some(update_msg) = self.generator.maybe_get_update() {
+                // currently we only care about the token updates
                 if let TextGenUpdate::Token(tok) = update_msg {
                     self.config
                         .textgen_parameters
@@ -157,6 +157,23 @@ impl eframe::App for AiNotepadApp {
                     );
                 });
         });
+
+        if self.generator.is_busy() {
+            egui::TopBottomPanel::bottom("progress").show(ctx, |ui| {
+                let (n, d) = self.generator.get_progress();
+                let progress = n as f32 / d as f32;
+
+                egui::Grid::new("TextgenParams")
+                    .num_columns(2)
+                    .show(ui, |ui| {
+                        ui.label("Generating:");
+                        let progress_bar = egui::ProgressBar::new(progress)
+                            .show_percentage();
+                        ui.add(progress_bar);
+                        ui.end_row();
+                    });
+            });
+        }
     }
 }
 

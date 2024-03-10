@@ -47,6 +47,9 @@ pub struct TextGeneratorManager {
     busy_signal: Arc<Mutex<bool>>,
     send: Sender<TextGenUpdate>,
     recv: Receiver<TextGenUpdate>,
+
+    tokens_to_predict: usize,
+    tokens_returned: usize,
 }
 impl TextGeneratorManager {
     pub fn new() -> Self {
@@ -54,17 +57,36 @@ impl TextGeneratorManager {
         TextGeneratorManager { 
             busy_signal: Arc::new(Mutex::new(false)),
             send, 
-            recv }
+            recv ,
+            tokens_to_predict: 0,
+            tokens_returned: 0,
+        }
     }
 
+    // Will return a TextGenUpdate if one is available from the worker thread.
     pub fn maybe_get_update(&mut self) -> Option<TextGenUpdate> {
         if let Ok(update) = self.recv.try_recv() {
+            self.tokens_returned += 1;
             Some(update)
         } else {
             None
         }
     }
 
+    // Checks the internal 'busy signal' to see if there's a text
+    // generation job already running.
+    pub fn is_busy(&self) -> bool {
+        let busy = self.busy_signal.lock().unwrap();
+        *busy
+    }
+
+    // Returns a tuple of (current predicted token count, total count to be predicted).
+    pub fn get_progress(&self) -> (usize, usize) {
+        (self.tokens_returned, self.tokens_to_predict)
+    }
+
+    // Starts a worker thread to handle the text generation and flips
+    // the 'busy_signal' mutex so that only one job can run at a time.
     pub fn generate_text(
         &mut self,
         model_id: String,
@@ -84,21 +106,24 @@ impl TextGeneratorManager {
             // set the busy signal
             *busy = true;
         }
+        
         let sender_clone = self.send.clone();
         let busy_signal_clone = self.busy_signal.clone();
+        
+        // make sure to clear the progress tracking
+        self.tokens_to_predict = params.to_sample;
+        self.tokens_returned = 0;
+        
         std::thread::spawn(move || {
-            let join = std::thread::spawn(move || {
-                let _ = worker_generate_text(
-                    model_id.as_str(),
-                    model_file.as_str(),
-                    tokenizer_repo_id.as_str(),
-                    eos_token_str.as_str(),
-                    &params,
-                    sender_clone,
-                    ctx,
-                );
-            });
-            join.join().expect("Failed to join the worker thread for text generation.");
+            let _ = worker_generate_text(
+                model_id.as_str(),
+                model_file.as_str(),
+                tokenizer_repo_id.as_str(),
+                eos_token_str.as_str(),
+                &params,
+                sender_clone,
+                ctx,
+            );
             {
                 // clear the busy signal
                 let mut busy = busy_signal_clone.lock().unwrap();
@@ -107,6 +132,8 @@ impl TextGeneratorManager {
         });
     }
 }
+
+// worker function for text generation; does all the actual work.
 fn worker_generate_text(
     model_id: &str,
     model_file: &str,
