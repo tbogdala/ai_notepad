@@ -1,5 +1,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
- 
+
 use anyhow::Context;
 use config::Config;
 use eframe::egui;
@@ -66,6 +66,21 @@ impl eframe::App for AiNotepadApp {
                             egui::DragValue::new(&mut self.config.textgen_parameters.top_p)
                                 .speed(0.01)
                                 .clamp_range(0.0..=1.0),
+                        );
+                        ui.end_row();
+
+                        ui.label("Min-P:");
+                        ui.add(
+                            egui::DragValue::new(&mut self.config.textgen_parameters.min_p)
+                                .speed(0.01)
+                                .clamp_range(0.0..=1.0),
+                        );
+                        ui.end_row();
+
+                        ui.label("Top-K:");
+                        ui.add(
+                            egui::DragValue::new(&mut self.config.textgen_parameters.top_k)
+                                .speed(1),
                         );
                         ui.end_row();
 
@@ -167,8 +182,7 @@ impl eframe::App for AiNotepadApp {
                     .num_columns(2)
                     .show(ui, |ui| {
                         ui.label("Generating:");
-                        let progress_bar = egui::ProgressBar::new(progress)
-                            .show_percentage();
+                        let progress_bar = egui::ProgressBar::new(progress).show_percentage();
                         ui.add(progress_bar);
                         ui.end_row();
                     });

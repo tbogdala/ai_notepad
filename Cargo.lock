@@ -19,12 +19,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c71b1793ee61086797f5c80b6efa2b8ffa6d5dd703f118545808a7f2e27f7046"
 
 [[package]]
-name = "accelerate-src"
-version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "415ed64958754dbe991900f3940677e6a7eefb4d7367afd70d642677b0c7d19d"
-
-[[package]]
 name = "accesskit"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -125,10 +119,11 @@ dependencies = [
 
 [[package]]
 name = "ai_notepad"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "candle-core",
+ "candle-nn",
  "candle-transformers",
  "crossbeam",
  "dirs",
@@ -136,6 +131,7 @@ dependencies = [
  "env_logger",
  "hf-hub",
  "log",
+ "rand",
  "rust-embed",
  "serde",
  "serde_yaml",
@@ -352,9 +348,9 @@ dependencies = [
 
 [[package]]
 name = "async-io"
-version = "2.3.1"
+version = "2.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8f97ab0c5b00a7cdbe5a371b9a782ee7be1316095885c8a4ea1daf490eb0ef65"
+checksum = "dcccb0f599cfa2f8ace422d3555572f47424da5648a4382a9dd0310ff8210884"
 dependencies = [
  "async-lock 3.3.0",
  "cfg-if",
@@ -429,7 +425,7 @@ version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9e47d90f65a225c4527103a8d747001fc56e375203592b25ad103e1ca13124c5"
 dependencies = [
- "async-io 2.3.1",
+ "async-io 2.3.2",
  "async-lock 2.8.0",
  "atomic-waker",
  "cfg-if",
@@ -654,9 +650,9 @@ dependencies = [
 
 [[package]]
 name = "bytemuck_derive"
-version = "1.5.0"
+version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "965ab7eb5f8f97d2a083c799f3a1b994fc397b2fe2da5d1da1626ce15a39f2b1"
+checksum = "4da9a32f3fed317401fa3c862968128267c3106685286e15d5aaa3d7389c2f60"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -704,16 +700,14 @@ dependencies = [
 [[package]]
 name = "candle-core"
 version = "0.4.2"
-source = "git+https://github.com/huggingface/candle.git#936f6a48407ee111f52742cf48eccc61f6b62325"
+source = "git+https://github.com/huggingface/candle.git#df5f69444e438a7cd8d8ab4971579bf309b72114"
 dependencies = [
- "accelerate-src",
  "byteorder",
  "candle-kernels",
  "candle-metal-kernels",
  "cudarc",
  "gemm",
  "half",
- "libc",
  "memmap2",
  "metal",
  "num-traits",
@@ -730,7 +724,7 @@ dependencies = [
 [[package]]
 name = "candle-kernels"
 version = "0.4.2"
-source = "git+https://github.com/huggingface/candle.git#936f6a48407ee111f52742cf48eccc61f6b62325"
+source = "git+https://github.com/huggingface/candle.git#df5f69444e438a7cd8d8ab4971579bf309b72114"
 dependencies = [
  "bindgen_cuda",
 ]
@@ -738,7 +732,7 @@ dependencies = [
 [[package]]
 name = "candle-metal-kernels"
 version = "0.4.2"
-source = "git+https://github.com/huggingface/candle.git#936f6a48407ee111f52742cf48eccc61f6b62325"
+source = "git+https://github.com/huggingface/candle.git#df5f69444e438a7cd8d8ab4971579bf309b72114"
 dependencies = [
  "metal",
  "once_cell",
@@ -749,9 +743,8 @@ dependencies = [
 [[package]]
 name = "candle-nn"
 version = "0.4.2"
-source = "git+https://github.com/huggingface/candle.git#936f6a48407ee111f52742cf48eccc61f6b62325"
+source = "git+https://github.com/huggingface/candle.git#df5f69444e438a7cd8d8ab4971579bf309b72114"
 dependencies = [
- "accelerate-src",
  "candle-core",
  "candle-metal-kernels",
  "half",
@@ -766,9 +759,8 @@ dependencies = [
 [[package]]
 name = "candle-transformers"
 version = "0.4.2"
-source = "git+https://github.com/huggingface/candle.git#936f6a48407ee111f52742cf48eccc61f6b62325"
+source = "git+https://github.com/huggingface/candle.git#df5f69444e438a7cd8d8ab4971579bf309b72114"
 dependencies = [
- "accelerate-src",
  "byteorder",
  "candle-core",
  "candle-nn",
