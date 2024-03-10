@@ -1,6 +1,6 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
+//#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] // hide console window on Windows in release
 // NOTE: The above line has to be commented out on Windows if you want to see log output.
-
+ 
 use anyhow::Context;
 use config::Config;
 use eframe::egui;

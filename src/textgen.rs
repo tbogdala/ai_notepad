@@ -1,3 +1,5 @@
+use std::sync::{Arc, Mutex};
+
 use anyhow::{Context, Result};
 
 use candle_core::quantized::gguf_file;
@@ -6,7 +8,7 @@ use candle_transformers::generation::LogitsProcessor;
 use candle_transformers::models::quantized_llama as model;
 use crossbeam::channel::{Receiver, Sender};
 use hf_hub::api::sync::Api;
-use log::{debug, error};
+use log::{debug, error, warn};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -42,13 +44,17 @@ pub enum TextGenUpdate {
 }
 
 pub struct TextGeneratorManager {
+    busy_signal: Arc<Mutex<bool>>,
     send: Sender<TextGenUpdate>,
     recv: Receiver<TextGenUpdate>,
 }
 impl TextGeneratorManager {
     pub fn new() -> Self {
         let (send, recv) = crossbeam::channel::unbounded();
-        TextGeneratorManager { send, recv }
+        TextGeneratorManager { 
+            busy_signal: Arc::new(Mutex::new(false)),
+            send, 
+            recv }
     }
 
     pub fn maybe_get_update(&mut self) -> Option<TextGenUpdate> {
@@ -68,17 +74,36 @@ impl TextGeneratorManager {
         params: TextGenerationParams,
         ctx: eframe::egui::Context,
     ) {
+        {
+            let mut busy = self.busy_signal.lock().unwrap();
+            if *busy == true {
+                warn!("Unable to process text generation while already busy.");
+                return;
+            }
+
+            // set the busy signal
+            *busy = true;
+        }
         let sender_clone = self.send.clone();
+        let busy_signal_clone = self.busy_signal.clone();
         std::thread::spawn(move || {
-            let _ = worker_generate_text(
-                model_id.as_str(),
-                model_file.as_str(),
-                tokenizer_repo_id.as_str(),
-                eos_token_str.as_str(),
-                &params,
-                sender_clone,
-                ctx,
-            );
+            let join = std::thread::spawn(move || {
+                let _ = worker_generate_text(
+                    model_id.as_str(),
+                    model_file.as_str(),
+                    tokenizer_repo_id.as_str(),
+                    eos_token_str.as_str(),
+                    &params,
+                    sender_clone,
+                    ctx,
+                );
+            });
+            join.join().expect("Failed to join the worker thread for text generation.");
+            {
+                // clear the busy signal
+                let mut busy = busy_signal_clone.lock().unwrap();
+                *busy = false;
+            }
         });
     }
 }
