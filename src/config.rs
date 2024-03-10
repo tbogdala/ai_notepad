@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::textgen::TextGenerationParams;
 
-pub const APP_TITLE: &str = "AI Notepad";
+pub const APP_TITLE: &str = "AI Notepad - v0.2.0";
 pub const APP_CONFIG_FOLDER: &str = "ai_notepad";
 pub const APP_CONFIG_FILE: &str = "config.yaml";
 
