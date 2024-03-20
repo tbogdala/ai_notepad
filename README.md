@@ -3,7 +3,7 @@
 A lightweight application to test interaction with large language models. Currently supports
 running GGUF quantized models with hardware acceleration.
 
-![ai_notepad in action](https://github.com/tbogdala/ai_notepad/blob/02674eeaee3304cab95d91b6ccb40a5ca163dd5c/assets/Screenshot.png)
+![ai_notepad in action](https://github.com/tbogdala/ai_notepad/blob/c9b10c1a461649cf47ebd445cb8d28134d2c3e2b/assets/Screenshot.png)
 
 ## Features
 
